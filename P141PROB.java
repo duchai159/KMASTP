@@ -4,9 +4,12 @@ import java.util.Scanner;
 
 public class P141PROB {
     static int r, c;
-    static char[][] matrix = new char[r][c];
+    static final int MAX_SIZE = 55;
+    static char[][] matrix = new char[MAX_SIZE][MAX_SIZE];
     static boolean check = true;
     static int countMax = 0;
+    static int[] dx = {0, -1, -1, -1, 0, 1, 1, 1};
+    static int[] dy = {-1, -1, 0, 1, 1, 1, 0, -1};
 
     static void input(Scanner scanner) {
         r = scanner.nextInt();
@@ -21,9 +24,6 @@ public class P141PROB {
             }
         }
     }
-    static void output() {
-
-    }
 
     static boolean outOfMatrix(int x, int y) {
         return x < 0 || x >= r || y < 0 || y >= c;
@@ -31,37 +31,46 @@ public class P141PROB {
 
     static int process(int x, int y) {
         int count = 0;
-        int[] dx = {0, -1, -1, -1, 0, 1, 1, 1};
-        int[] dy = {-1, -1, 0, 1, 1, 1, 0, -1};
         for (int i = 0; i < 8; i++) {
             int tx = x + dx[i];
             int ty = y + dy[i];
-            if (!outOfMatrix(tx,ty) && matrix[tx][ty] == 'o') {
-                    count++;
+            if (!outOfMatrix(tx, ty) && matrix[tx][ty] == 'o') {
+                count++;
             }
         }
         return count;
     }
+
+    static int calc() {
+        int count = 0;
+        for (int i = 0; i < r; i++) {
+            for (int j = 0; j < c; j++) {
+                if (matrix[i][j] == 'o') {
+                    count += process(i, j);
+                }
+            }
+        }
+        return count / 2;
+    }
+
     static void solve() {
-        if(!check){
+        if (!check) {
+            int countMax = 0;
+            int temp = calc();
             for (int i = 0; i < r; i++) {
                 for (int j = 0; j < c; j++) {
-                    if(matrix[i][j] == 'o'){
-
+                    if (matrix[i][j] == '.') {
+                        int count = temp + process(i, j);
+                        if (count > countMax) {
+                            countMax = count;
+                        }
                     }
                 }
             }
-        }else{
-            int count = 0;
-            for (int i = 0; i < r; i++) {
-                for (int j = 0; j < c; j++) {
-                    count += process(i,j);
-                    matrix[i][j] = '.';
-                }
-            }
-            System.out.println(count);
+            System.out.println(countMax);
+        } else {
+            System.out.println(calc());
         }
-
     }
 
     public static void main(String[] args) throws FileNotFoundException {
@@ -69,6 +78,5 @@ public class P141PROB {
         Scanner scanner = new Scanner(System.in);
         input(scanner);
         solve();
-        output();
     }
 }
